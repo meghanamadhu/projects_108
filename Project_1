@@ -1,0 +1,70 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: Meghana Madhusudanan
+// 
+// Create Date: 19.12.2024 17:13:58
+// Design Name: Ripple Carry Adder
+// Module Name: ripple_carry_adder
+// Project Name: Project 1
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module ripple_carry_adder #(parameter N=4)(input[N-1:0] A,input [N-1:0] B,output [N-1:0] sum,output Cout
+   
+    );
+    wire [N-1:0] carry;
+    genvar i;
+    generate
+    for(i=0;i<N;i=i+1) begin: full_adder_gen
+    if(i==0) begin
+        full_adder fa1(.A(A[i]),.B(B[i]),.cin(1'b0),.sum(sum[i]),.Cout(carry[i]));
+    end
+    else begin
+    full_adder fa2(.A(A[i]),.B(B[i]),.cin(carry[i-1]),.sum(sum[i]),.Cout(carry[i]));
+    end
+end
+endgenerate
+assign Cout=carry[N-1];
+endmodule    
+module full_adder(input A,input B,input cin,output sum,output Cout);
+     assign sum=A^B^cin;
+     assign Cout=(A&B)|(B&cin)|(A&cin);
+     endmodule
+     
+         
+module ripple_carry_adder_tb #(parameter N=4);
+reg [N-1:0] A;
+reg [N-1:0] B;
+wire [N-1:0] sum;
+wire Cout;
+wire carry[N-1:0];
+ripple_carry_adder #(N) uut(.A(A),.B(B),.sum(sum),.Cout(Cout));
+initial begin
+A=0;
+B=0;
+#10 A=4'b0001; B=4'b0001;
+#1 ;
+$display("Time:%0t :A=%b B=%b => Sum=%b Cout=%b", $time, A,B,sum,Cout);
+#10 A=4'b1100; B=4'b0010;
+#1;
+$display("Time:%0t :A=%b B=%b => Sum=%b Cout=%b", $time, A,B,sum,Cout);
+#10 A=4'b0011; B=4'b0110;
+#1;
+$display("Time:%0t :A=%b B=%b => Sum=%b Cout=%b", $time, A,B,sum,Cout);
+#10 $stop;
+end
+
+
+
+endmodule
