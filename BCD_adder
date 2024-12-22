@@ -1,0 +1,65 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: Meghana Madhusudanan
+// 
+// Create Date: 22.12.2024 11:09:47
+// Design Name: 
+// Module Name: BCD_adder
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module BCD_adder(input [3:0] a,input [3:0] b, input cin, output reg [7:0] sum,output reg cout);
+    reg [7:0] temp_sum;
+
+    always@(*)
+    begin
+      temp_sum=a+b+cin;
+      if(temp_sum>9) begin
+          sum[7:0]=temp_sum+4'b0110;
+          cout=1'b1;
+      end
+      else begin
+          sum[7:0]=temp_sum;
+          cout=1'b0;
+     end
+     end
+ endmodule
+module bcd_adder_tb();
+reg [3:0] a;
+reg [3:0] b;
+reg cin;
+wire cout;
+wire [7:0] sum;
+
+BCD_adder uut(.a(a),.b(b),.cin(cin),.sum(sum),.cout(cout));
+    initial begin
+    #10;
+    a=4'b0000; b=4'b0000; cin=1'b0;
+    #10;
+    $display("a=%b , b=%b, cin=%b=> sum=%b,cout=%b",a,b,cin,sum,cout);
+    #10;
+    a=4'b0001; b=4'b1000; cin=1'b0;
+    #10;
+    $display("a=%b, b=%b, cin=%b=> sum=%b, cout=%b",a,b,cin,sum,cout);
+    #10;
+    a=4'b0001; b=4'b1000; cin=1'b0;
+    #10;
+    $display("a=%b, b=%b, cin=%b=> sum=%b, cout=%b",a,b,cin,sum,cout);
+    a=4'b0101; b=4'b1100; cin=1'b1;
+    #10;
+    $display("a=%b, b=%b, cin=%b=> sum=%b, cout=%b",a,b,cin,sum,cout);
+    $finish;
+    end
+    endmodule
